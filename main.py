@@ -4,6 +4,7 @@ import sys
 
 alphabet = list(string.ascii_lowercase)
 digits = list(string.digits)
+specials = list(string.punctuation)
 
 print(images.logo)
 
@@ -46,7 +47,7 @@ def encode_text():
 
     encoded_message = ""
     for ch in text.lower():
-        if ch != " ":
+        if ch not in specials and ch != " ":
             for s in alphabet:
                 if s == ch:
                     index = alphabet.index(s)
@@ -74,7 +75,7 @@ def decode_text():
     
     decoded_message = ""
     for ch in text.lower():
-        if ch != " ":
+        if ch not in specials and ch != " ":
             for s in encoded_alphabet:
                 if s == ch:
                     index = encoded_alphabet.index(s)
