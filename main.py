@@ -8,16 +8,23 @@ specials = list(string.punctuation)
 
 print(images.logo)
 
-
 def start_operations():
     operation = input("Type 'encode' to encrypt, type 'decode' to decrypt:\n")
     while operation not in ['encode', 'decode']:
         operation = input("Wrong input, try again:\n")
-    if operation == 'encode':
-        encode_text()
-    elif operation == 'decode':
-        decode_text()
 
+    if operation == 'encode':
+        text = input(
+        "Enter desired message for the encryption:\n")
+    elif operation == 'decode':
+        text = input(
+        "Enter message to decrypt:\n")
+
+    shift = input("Set encryption shift number:\n")
+    while check_for_chars(shift):
+        shift = input("Shift must be a number:\n")
+
+    caesar(text, shift, operation)
 
 def continue_operations():
     next_operation = input(
@@ -29,62 +36,6 @@ def continue_operations():
     elif next_operation in ['N', 'no', 'n']:
         exit()
 
-
-def encode_text():
-    text = input(
-        "Enter desired message for the encryption(excluding digits):\n")
-    while check_for_digits(text):
-        text = input("Wrong input, exclude digits:\n")
-    shift = input("Set encryption shift number:\n")
-    while check_for_chars(shift):
-        shift = input("Shift must be a number:\n")
-
-    encoded_alphabet = alphabet.copy()
-    i = 0
-    while i < int(shift):
-        encoded_alphabet.insert(0, encoded_alphabet.pop())
-        i += 1
-
-    encoded_message = ""
-    for ch in text.lower():
-        if ch not in specials and ch != " ":
-            for s in alphabet:
-                if s == ch:
-                    index = alphabet.index(s)
-            ch = encoded_alphabet[index]
-        encoded_message += ch
-
-    print("Result:",encoded_message)
-    return continue_operations()
-
-
-def decode_text():
-    text = input(
-        "Enter message to decrypt:\n")
-    while check_for_digits(text):
-        text = input("Invalid input, must not contain digits:\n")
-    shift = input("Shift number:\n")
-    while check_for_chars(shift):
-        shift = input("Shift must be a number:\n")
-    
-    encoded_alphabet = alphabet.copy()
-    i = 0
-    while i < int(shift):
-        encoded_alphabet.insert(0, encoded_alphabet.pop())
-        i += 1
-    
-    decoded_message = ""
-    for ch in text.lower():
-        if ch not in specials and ch != " ":
-            for s in encoded_alphabet:
-                if s == ch:
-                    index = encoded_alphabet.index(s)
-            ch = alphabet[index]
-        decoded_message += ch
-
-    print("Result:",decoded_message)
-    return continue_operations()
-
 def check_for_chars(string):
     bad_shift = False
     for ch in alphabet:
@@ -92,13 +43,29 @@ def check_for_chars(string):
             bad_shift = True
     return bad_shift
 
-
-def check_for_digits(string):
-    contain_digits = False
-    for n in digits:
-        if string.find(n) != -1:
-            contain_digits = True
-    return contain_digits
-
+def caesar(text, shift, operation):
+    encoded_alphabet = alphabet.copy()
+    i = 0
+    while i < int(shift):
+        encoded_alphabet.insert(0, encoded_alphabet.pop())
+        i += 1
+    result_message = ""
+    for ch in text.lower():
+        if ch not in specials and ch != " " and ch not in digits:
+            if operation == 'encode':
+                # encode
+                for s in alphabet:
+                    if s == ch:
+                        index = alphabet.index(s)
+                ch = encoded_alphabet[index]
+            elif operation == 'decode':
+                # decode
+                for s in encoded_alphabet:
+                    if s == ch:
+                        index = encoded_alphabet.index(s)
+                ch = alphabet[index]
+        result_message += ch
+    print("Result:", result_message)
+    return continue_operations()
 
 start_operations()
